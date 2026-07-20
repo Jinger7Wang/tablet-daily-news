@@ -1,1 +1,24 @@
+name: 平板资讯每日自动更新
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安装Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 运行自动生成脚本
+        run: python auto_gen_news.py
+      - name: 提交更新
+        run: |
+          git config --global user.name "AutoBot"
+          git config --global user.email "bot@github.com"
+          git add .
+          git commit -m "自动更新当日平板行业资讯"
+          git push
